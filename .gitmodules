@@ -1,0 +1,6 @@
+[submodule "ubuntu-kernel"]
+	path = ubuntu-kernel
+	url = git://kernel.ubuntu.com/ubuntu/ubuntu-yakkety.git
+[submodule "patches/vfio"]
+	path = patches/vfio
+	url = https://aur.archlinux.org/linux-vfio.git
