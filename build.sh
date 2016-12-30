@@ -14,7 +14,7 @@ cp -r -f -v config/** ubuntu-kernel/debian.master/config/
 #Build
 echo Building
 fakeroot debian/rules clean
-fakeroot make-kpkg -j N --initrd --append-to-version=enas-1.0 kernel-image kernel-headers
+fakeroot make-kpkg -j 8 --initrd --append-to-version=enas-1.0 kernel-image kernel-headers
 #fakeroot debian/rules binary-headers binary-generic binary-perarch
 
 echo Done!
