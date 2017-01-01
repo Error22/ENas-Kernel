@@ -12,6 +12,7 @@ echo Copying configs
 cp -r -f -v config/** ubuntu-kernel/debian.master/config/
 
 #Version
+echo Applying version info
 cd debian.master
 cp changelog ../changelog.original
 (sed 0,/\)/{s/\)/+enas-1.0\)/} changelog ) > changelog.temp
@@ -19,13 +20,18 @@ cp changelog.temp changelog
 rm changelog.temp
 cd ../
 
+#Config update
+echo Updating configs
+fakeroot debian/rules clean
+fakeroot make olddefconfig
+
 #Build
 echo Building
-fakeroot make olddefconfig
 fakeroot debian/rules clean
 fakeroot debian/rules binary-headers binary-generic binary-perarch skipabis=true
 
 #Reset Version
+echo Resetting version info
 cd debian.master
 rm changelog
 cp ../changelog.original changelog 
