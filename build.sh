@@ -11,10 +11,25 @@ patch -p1 < ../patches/vfio/0001-pci-Enable-overrides-for-missing-ACS-capabiliti
 echo Copying configs
 cp -r -f -v config/** ubuntu-kernel/debian.master/config/
 
+#Version
+cd debian.master
+cp changelog ../changelog.original
+(sed 0,/\)/{s/\)/+enas-1.0\)/} changelog ) > changelog.temp
+cp changelog.temp changelog
+rm changelog.temp
+cd ../
+
 #Build
 echo Building
+fakeroot make olddefconfig
 fakeroot debian/rules clean
-fakeroot make-kpkg -j 8 --initrd --append-to-version=enas-1.0 kernel-image kernel-headers
-#fakeroot debian/rules binary-headers binary-generic binary-perarch
+fakeroot debian/rules binary-headers binary-generic binary-perarch skipabis=true
+
+#Reset Version
+cd debian.master
+rm changelog
+cp ../changelog.original changelog 
+cd ../
+rm changelog.original
 
 echo Done!
