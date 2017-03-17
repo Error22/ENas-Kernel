@@ -2,22 +2,28 @@
 
 #---- Settings ----
 #Version
-if [ -z ${BUILD_NUMBER+x} ]; then
-	echo Build number found!
-	version=-enas-1.$BUILD_NUMBER
+if [ -n "$BUILD_NUMBER" ]; then
+	buildversion=b$BUILD_NUMBER
+elif [ -n "$BUILD_NAME" ]; then
+	buildversion=$BUILD_NAME
 else
-	echo No build number, custom build
-	version=-enas-1-custom
+	echo No build number or name, custom build
+	buildversion=custom
 fi
 
+majorversion=1
+minorversion=0
+version=enas-$majorversion.$minorversion-$buildversion
+
 #Core count
-if [ -z ${CORE_COUNT+x} ]; then
-	echo Core count found
+if [ -n "$CORE_COUNT" ]; then
 	corecount=$CORE_COUNT
 else
-	echo Looking up core count
 	corecount=$(grep -c ^processor /proc/cpuinfo)
+	((corecount-=1))
 fi
+
+echo ENAS Kernel Builder \(Version: $version Cores: $corecount\) 
 
 #---- Body ----
 cd ubuntu-kernel
@@ -34,6 +40,6 @@ cp -r -f -v config/** ubuntu-kernel/debian.master/config/
 #Build
 echo Build
 fakeroot debian/rules clean
-fakeroot make -j$corecount olddefconfig bindeb-pkg LOCALVERSION=$version
+fakeroot make -j$corecount olddefconfig bindeb-pkg LOCALVERSION=-$version
 
 echo Done!
